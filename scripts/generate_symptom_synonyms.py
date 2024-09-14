@@ -40,6 +40,3 @@ for symptom in all_symptoms:
     all_word_definitions[symptom] = response.parts[0]
     print(symptom, all_word_definitions[symptom])
     print()
-
-    with open('symptoms_synonyms_new.pkl', 'wb') as f:
-        pickle.dump(all_word_definitions, f)

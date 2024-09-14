@@ -25,7 +25,7 @@ def collect_symptoms_synonyms():
         for key in symptoms_synonyms_raw.keys():
             for synonym in symptoms_synonyms_raw[key]:
                 symptoms_synonyms[synonym.lower()] = key.lower()
-        print(symptoms_synonyms)
+        # print(symptoms_synonyms)
         return symptoms_synonyms
 symptoms_synonyms = collect_symptoms_synonyms()
 # print(symptoms_synonyms)
@@ -54,13 +54,13 @@ def analyze_transcript(transcript):
                     potential_symptoms[result] += 1
                 else:
                     potential_symptoms[result] = 1
-    # delete = []
-    # for key in potential_symptoms.keys():
-    #     # condition for whether potential symptom is accepted
-    #     if key.count(" ") + 1 > potential_symptoms[key]:
-    #         delete.append(key)
-    # for key in delete:
-    #     del potential_symptoms[key]
+    delete = []
+    for key in potential_symptoms.keys():
+        # condition for whether potential symptom is accepted
+        if potential_symptoms[key] == 1:
+            delete.append(key)
+    for key in delete:
+        del potential_symptoms[key]
     return potential_symptoms
 
 def symptom_lookup(word):
@@ -77,7 +77,5 @@ def symptom_lookup(word):
     return None
 
 # print(analyze_transcript("These days I feel a lot of fatigue."))
-
-
-print(symptom_lookup("puke"))
+# print(symptom_lookup("puke"))
 
