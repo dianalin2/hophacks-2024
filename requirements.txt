@@ -1,2 +1,6 @@
 RealtimeSTT
 nltk
+gtts
+pydub
+google-generativeai
+fpdf2
