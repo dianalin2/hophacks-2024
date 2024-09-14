@@ -22,6 +22,7 @@ def collect_disease_data():
 
                 for i in range(len(disease[search_string])):
                     disease[search_string][i] = disease[search_string][i].replace("_"," ")
+                    disease[search_string][i] = disease[search_string][i].lstrip()
                 
                 disease[search_string] = [x for x in disease[search_string] if x.strip()]
             x = False
