@@ -28,7 +28,7 @@ def collect_symptoms_synonyms():
         print(symptoms_synonyms)
         return symptoms_synonyms
 symptoms_synonyms = collect_symptoms_synonyms()
-
+print(symptoms_synonyms)
 
 # analyze transcript returns a dictionary with the potential symptom as well as how many synonyms were detected
 allowed_POS = ['NNP', 'VBG', 'JJ', 'NN', 'NNS', 'VBP', 'VBD', 'CC', 'RB', 'VBN', 'DT', 'JJS', 'CD']
@@ -39,13 +39,13 @@ def analyze_transcript(transcript):
         wordsList = nltk.word_tokenize(i)
         tagged = nltk.pos_tag(wordsList)
         for word in tagged:
-            if word[1] in allowed_POS:
-                result = symptom_lookup(word[0])
-                if result is not None:
-                    if result in potential_symptoms.keys():
-                        potential_symptoms[result] += 1
-                    else:
-                        potential_symptoms[result] = 1
+            # if word[1] in allowed_POS:
+            result = symptom_lookup(word[0])
+            if result is not None:
+                if result in potential_symptoms.keys():
+                    potential_symptoms[result] += 1
+                else:
+                    potential_symptoms[result] = 1
     # delete = []
     # for key in potential_symptoms.keys():
     #     # condition for whether potential symptom is accepted
@@ -56,11 +56,11 @@ def analyze_transcript(transcript):
     return potential_symptoms
 
 def symptom_lookup(word):
-    if word in symptoms_synonyms.keys():
+    if word.lower() in symptoms_synonyms.keys():
         return symptoms_synonyms[word]
     return None
 
-print(analyze_transcript("These days I feel a lot of fatigue."))
+# print(analyze_transcript("These days I feel a lot of fatigue."))
 
 
 
