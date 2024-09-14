@@ -2,12 +2,12 @@ import csv
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 
-nltk.download()
+# nltk.download()
 
-symptoms = []
+symptoms = ["fatigue"]
 symptoms_common_words = {
-    "fatigue": "tired",
-    "itchy": "scratchy"
+    "tired": "fatigue",
+    "scratchy": "itchy"
 }
 patient_symptoms = []
 
@@ -25,41 +25,40 @@ def collect_symptoms_data():
 # collect_symptoms_data()
 # print(symptoms)
 
-allowed_POS = ["VBZ"]
+def symptom_lookup(word):
+    if word in symptoms:
+        return word
+    else:
+        for key in symptoms_common_words.keys():
+            if word.lower() in key.lower():
+                return symptoms_common_words[key]
+        return None
+
+allowed_POS = ['NNP', 'VBG', 'JJ', 'NN', 'NNS', 'VBP', 'VBD', 'CC', 'RB', 'VBN', 'DT', 'JJS', 'CD']
 def analyze_transcript(transcript):
     tokenized = sent_tokenize(transcript)
+    potential_symptoms = {}
     for i in tokenized:
         wordsList = nltk.word_tokenize(i)
         tagged = nltk.pos_tag(wordsList)
         for word in tagged:
             if word[1] in allowed_POS:
-                print(word[0])
+                result = symptom_lookup(word[0])
+                if result is not None:
+                    if result in potential_symptoms.keys():
+                        potential_symptoms[result] += 1
+                    else:
+                        potential_symptoms[result] = 1
+    delete = []
+    for key in potential_symptoms.keys():
+        # condition for whether potential symptom is accepted
+        if key.count(" ") + 1 > potential_symptoms[key]:
+            delete.append(key)
+    for key in delete:
+        del potential_symptoms[key]
+    return potential_symptoms
 
-txt = "Sukanya, Rajib and Naba are my good friends. " \
-    "Sukanya is getting married next year. " \
-    "Marriage is a big step in one’s life." \
-    "It is both exciting and frightening. " \
-    "But friendship is a sacred bond between people." \
-    "It is a special kind of love between us. " \
-    "Many of you must have tried searching for a friend "\
-    "but never found the right one."
-analyze_transcript(txt)
-    
-
-
-collect_symptoms_data()
-print(symptoms)
-
-def symptom_lookup(word):
-    if word in symptoms:
-        return word
-    else:
-        for symptom in symptoms:
-            for common in symptoms_common_words[symptom]:
-                if common.lower() == word.lower():
-                    patient_symptoms.append(symptom)
-                    return symptom
-        return None
+print(analyze_transcript("I'm really tired these days."))
 
 
 
