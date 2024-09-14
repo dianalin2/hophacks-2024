@@ -1,14 +1,11 @@
 import csv
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
+import pickle
 
-nltk.download()
+# nltk.download()
 
-symptoms = []
-symptoms_common_words = {
-    "fatigue": "tired",
-    "itchy": "scratchy"
-}
+symptoms = ["fatigue"]
 patient_symptoms = []
 
 def collect_symptoms_data():
@@ -19,47 +16,51 @@ def collect_symptoms_data():
             symptoms.append(row[0])
             symptoms[-1] = symptoms[-1].replace("_"," ")
         csv_file.close()
-
     symptoms.remove(symptoms[0])
-    
-# collect_symptoms_data()
-# print(symptoms)
 
-allowed_POS = ["VBZ"]
+def collect_symptoms_synonyms():
+    with open('data/symptoms_synonyms.pkl', 'rb') as f:
+        symptoms_synonyms_raw = pickle.load(f)
+        symptoms_synonyms = {}
+        for key in symptoms_synonyms_raw.keys():
+            for synonym in symptoms_synonyms_raw[key]:
+                symptoms_synonyms[synonym.lower()] = key.lower()
+        print(symptoms_synonyms)
+        return symptoms_synonyms
+symptoms_synonyms = collect_symptoms_synonyms()
+
+
+# analyze transcript returns a dictionary with the potential symptom as well as how many synonyms were detected
+allowed_POS = ['NNP', 'VBG', 'JJ', 'NN', 'NNS', 'VBP', 'VBD', 'CC', 'RB', 'VBN', 'DT', 'JJS', 'CD']
 def analyze_transcript(transcript):
     tokenized = sent_tokenize(transcript)
+    potential_symptoms = {}
     for i in tokenized:
         wordsList = nltk.word_tokenize(i)
         tagged = nltk.pos_tag(wordsList)
         for word in tagged:
             if word[1] in allowed_POS:
-                print(word[0])
-
-txt = "Sukanya, Rajib and Naba are my good friends. " \
-    "Sukanya is getting married next year. " \
-    "Marriage is a big step in one’s life." \
-    "It is both exciting and frightening. " \
-    "But friendship is a sacred bond between people." \
-    "It is a special kind of love between us. " \
-    "Many of you must have tried searching for a friend "\
-    "but never found the right one."
-analyze_transcript(txt)
-    
-
-
-collect_symptoms_data()
-print(symptoms)
+                result = symptom_lookup(word[0])
+                if result is not None:
+                    if result in potential_symptoms.keys():
+                        potential_symptoms[result] += 1
+                    else:
+                        potential_symptoms[result] = 1
+    # delete = []
+    # for key in potential_symptoms.keys():
+    #     # condition for whether potential symptom is accepted
+    #     if key.count(" ") + 1 > potential_symptoms[key]:
+    #         delete.append(key)
+    # for key in delete:
+    #     del potential_symptoms[key]
+    return potential_symptoms
 
 def symptom_lookup(word):
-    if word in symptoms:
-        return word
-    else:
-        for symptom in symptoms:
-            for common in symptoms_common_words[symptom]:
-                if common.lower() == word.lower():
-                    patient_symptoms.append(symptom)
-                    return symptom
-        return None
+    if word in symptoms_synonyms.keys():
+        return symptoms_synonyms[word]
+    return None
+
+print(analyze_transcript("These days I feel a lot of fatigue."))
 
 
 
