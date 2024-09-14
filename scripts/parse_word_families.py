@@ -19,4 +19,6 @@ for rep in word_families.keys():
     for family_member in word_families[rep]:
         word_representative[family_member] = rep
 
+with open('data/word_families.pkl', 'wb') as f:
+    pickle.dump((word_representative, word_families), f)
 
