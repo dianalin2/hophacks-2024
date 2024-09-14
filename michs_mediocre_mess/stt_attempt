@@ -1,0 +1,6 @@
+from RealtimeSTT import AudioToTextRecorder
+
+with AudioToTextRecorder() as recorder:
+    recorder.start()
+    recorder.stop()
+    print(recorder.text())
