@@ -1,2 +1,4 @@
 RealtimeSTT
 nltk
+gtts
+pydub
