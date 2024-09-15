@@ -26,6 +26,12 @@ def main():
     follow_up_info2 = process(follow_up_transcript2)
     print(follow_up_info2)
 
+    all_symptoms = combine_symptoms(combine_symptoms(info[1], follow_up_info1[1]), follow_up_info2[1])
+    all_diagnoses = combine_diagnoses(combine_diagnoses(info[2], follow_up_info1[2]), follow_up_info2[2])
+    all_diagnoses = isolate_diagnoses(all_diagnoses)
+    print(all_diagnoses)
+    generate_pdf("out/temp.pdf", "Andrew Hong", "14", "M", info[0], [(follow_up_questions[0], follow_up_transcript1), (follow_up_questions[1], follow_up_transcript2)], all_symptoms, all_diagnoses)
+
     
 # pay attention to the order that this method returns the details
 def process(transcript):
@@ -34,6 +40,26 @@ def process(transcript):
     diagnoses = find_possible_diagnoses(symptoms)
 
     return (summary, symptoms, diagnoses)
+
+def combine_symptoms(s1, s2):
+    for key in s1.keys():
+        if key in s2.keys():
+            s2[key] += s1[key]
+        else:
+            s2[key] = s1[key]
+    return s2
+
+def combine_diagnoses(d1, d2):
+    for d in d1:
+        if d not in d2:
+            d2.append(d)
+    return d2
+
+def isolate_diagnoses(diagnoses):
+    output = []
+    for d in diagnoses:
+        output.append(d[0])
+    return output
 
 if __name__ == '__main__':
     main()
