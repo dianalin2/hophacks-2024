@@ -1,12 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
-<<<<<<< HEAD
 import Triage from './components/triage_dropdown';
-=======
 import PDFviewer from './components/pdfviewer';
-
-
->>>>>>> 8376b62ba704126d169ba26ef408f5080db06c18
+import PatientRow from './components/PatientRow';
 
 function App() {
   return (
@@ -24,14 +19,27 @@ function App() {
         >
           Learn React
         </a>
-<<<<<<< HEAD
         <Triage />
 
       </header>
-=======
-      </header> */}
-      <PDFviewer/>
->>>>>>> 8376b62ba704126d169ba26ef408f5080db06c18
+      </header>
+      <PDFviewer/> */}
+      <div className="MainContainer">
+        <p className="AppTitle">Patient Data</p>
+        <table className="InfoTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Number</th>
+              <th>Timestamp</th>
+              <th>Prediction</th>
+            </tr>
+          </thead>
+          <tbody>
+            <PatientRow patientID={123} name="Andrew Hong" number="217-281-1471" timestamp="9/14/24 9:38pm" linkToReport="Click me!"/>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
