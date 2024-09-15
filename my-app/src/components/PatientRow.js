@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import pdf from "./document.pdf";
 
 function PatientRow ({ patientID, name, number, timestamp, linkToReport}) {
-    return (
+    return ( 
         <tr>
             <td>{name}</td>
             <td>{number}</td>
