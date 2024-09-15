@@ -54,21 +54,21 @@ def analyze_transcript(transcript):
                     potential_symptoms[result] += 1
                 else:
                     potential_symptoms[result] = 1
-    delete = []
-    for key in potential_symptoms.keys():
-        # condition for whether potential symptom is accepted
-        if potential_symptoms[key] == 1:
-            delete.append(key)
-    for key in delete:
-        del potential_symptoms[key]
+    # delete = []
+    # for key in potential_symptoms.keys():
+    #     # condition for whether potential symptom is accepted
+    #     if potential_symptoms[key] == 1:
+    #         delete.append(key)
+    # for key in delete:
+    #     del potential_symptoms[key]
     return potential_symptoms
 
 def symptom_lookup(word):
     if word.lower() in symptoms:
         return word.lower()
     if word.lower() in symptoms_synonyms.keys():
-        return symptoms_synonyms[word]
-    elif word_representative[word.lower()] is not None:
+        return symptoms_synonyms[word.lower()]
+    elif word.lower() in word_representative:
         for family_member in word_families[word_representative[word.lower()]]:
             if family_member in symptoms_synonyms.keys():
                 return symptoms_synonyms[family_member]
