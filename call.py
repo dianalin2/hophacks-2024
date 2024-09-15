@@ -1,30 +1,38 @@
 from twilio.rest import Client
-from twilio.twiml.voice_response import VoiceResponse, Say
+from twilio.twiml.voice_response import VoiceResponse
 from uuid import uuid4
 from flask import Flask, request, send_from_directory, redirect
 import threading
-from main import process
 from follow_up import synthesize_follow_up
 import os
-
-app = Flask(__name__)
+from analyze_description import analyze_transcript
+from summarize import summarize
+from diagnose import find_possible_diagnoses
+from follow_up import synthesize_follow_up
+from pdf_generator import generate_pdf
+from dotenv import load_dotenv
 
 current_calls = {}
+
+load_dotenv()
 
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 BASE_URL = os.getenv('BASE_URL')
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-@app.route('/gather/callback', methods=['POST'])
-def gather_callback():
-    sid = request.form['CallSid']
-    speech_result = request.form['SpeechResult']
-    return current_calls[sid]['callback'](sid, speech_result)
+def setup_app(app):
+    print(BASE_URL)
 
-@app.route('/xml/<filename>', methods=['GET'])
-def get_xml(filename):
-    return send_from_directory('xml', filename)
+    @app.route('/gather/callback', methods=['POST'])
+    def gather_callback():
+        sid = request.form['CallSid']
+        speech_result = request.form['SpeechResult']
+        return current_calls[sid]['callback'](sid, speech_result)
+
+    @app.route('/xml/<filename>', methods=['GET'])
+    def get_xml(filename):
+        return send_from_directory('xml', filename)
 
 def upload_xml(content, filename):
     with open(f'xml/{filename}', 'w') as f:
@@ -140,11 +148,60 @@ def _synthesize_follow_up(sid):
     follow_up_questions = synthesize_follow_up(symptoms)
     current_calls[sid]['follow_ups'] = follow_up_questions
 
+    if not current_calls[sid]['next']:
+        return goodbye(sid)
+
     next, current_calls[sid]['next'] = current_calls[sid]['next'][0], current_calls[sid]['next'][1:]
     return next[0](sid, *next[1])
 
 def follow_up(sid, question_num):
     return generate_voice_response(sid, current_calls[sid]['follow_ups'][question_num])
+
+def process(transcript):
+    symptoms = analyze_transcript(transcript)
+    summary = summarize(transcript)
+    diagnoses = find_possible_diagnoses(symptoms)
+
+    return (summary, symptoms, diagnoses)
+
+def combine_symptoms(s1, s2):
+    for key in s1.keys():
+        if key in s2.keys():
+            s2[key] += s1[key]
+        else:
+            s2[key] = s1[key]
+    return s2
+
+def combine_diagnoses(d1, d2):
+    for d in d1:
+        if d not in d2:
+            d2.append(d)
+    return d2
+
+def isolate_diagnoses(diagnoses):
+    output = []
+    for d in diagnoses:
+        output.append(d[0])
+    return output
+
+def _generate_pdf(sid, output_filename, name, age, sex):
+    info, follow_up_info1, follow_up_info2 = current_calls[sid]['info']
+    follow_up_questions = current_calls[sid]['follow_ups']
+    follow_up_transcript1, follow_up_transcript2 = current_calls[sid]['all_responses'][1:3]
+
+    all_symptoms = combine_symptoms(combine_symptoms(info[1], follow_up_info1[1]), follow_up_info2[1])
+    all_diagnoses = combine_diagnoses(combine_diagnoses(info[2], follow_up_info1[2]), follow_up_info2[2])
+    all_diagnoses = isolate_diagnoses(all_diagnoses)[:5]
+    print(current_calls[sid])
+    print(all_diagnoses)
+    generate_pdf(output_filename, name, age, sex, info[0], [(follow_up_questions[0], follow_up_transcript1), (follow_up_questions[1], follow_up_transcript2)], all_symptoms, all_diagnoses)
+
+    if not current_calls[sid]['next']:
+        return goodbye(sid)
+
+    next, current_calls[sid]['next'] = current_calls[sid]['next'][0], current_calls[sid]['next'][1:]
+    return next[0](sid, *next[1])
+
 
 if __name__ == '__main__':
     threading.Thread(target=make_call, args=(
@@ -161,6 +218,7 @@ if __name__ == '__main__':
             (follow_up, (1,)),
             (wait_for_prompt, ()),
             (process_transcript, ()),
+            (_generate_pdf, ('out/temp.pdf', 'Andrew Hong', '14', 'M'))
         ]
     )).start()
 

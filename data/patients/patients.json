@@ -1,16 +1,26 @@
-{
-    "14": {
+[
+    {
+        "id": "14",
         "name": "Andrew Hong",
-        "number": "217-281-1471",
+        "number": "+12172811471",
         "age": "17",
         "sex": "M",
         "timestamp": "9/14/24 9:38pm"
     },
-    "15356": {
+    {
+        "id": "15356",
         "name": "Jessica Su",
-        "number": "234-567-1234",
+        "number": "+18623520163",
         "age": "45",
         "sex": "F",
         "timestamp": "9/13/24 5:32pm"
+    },
+    {
+        "id": "12",
+        "name": "Diana Lin",
+        "number": "+12404531668",
+        "age": "18",
+        "sex": "F",
+        "timestamp": "9/15/24 7:40am"
     }
-}
+]

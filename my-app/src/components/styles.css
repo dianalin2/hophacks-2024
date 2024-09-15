@@ -13,24 +13,26 @@
 }
 
 .trHead {
-    background: rgb(245,245,245);
+    background: rgb(245, 245, 245);
 }
 
 .th {
     font-weight: bold;
     padding: var(--sm-spacing);
-    color: rgb(33,33,33);
+    color: rgb(33, 33, 33);
     text-transform: capitalize;
     font-weight: 600;
     font-size: 14px;
 }
 
 .trBody {
-    background: rgb(255,255,255);;
+    background: rgb(255, 255, 255);
+    ;
 }
 
 .td {
     padding: 16px;
-    border: 1px solid rgb(33,33,33);;
+    border: 1px solid rgb(33, 33, 33);
+    ;
     font-size: 14px;
 }

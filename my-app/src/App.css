@@ -6,14 +6,19 @@
 .MainContainer {
   margin: auto;
   width: 100%;
-  background-color: rgb(225, 232, 247);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .InfoTable {
   margin: auto;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid black;
   border-collapse: collapse;
 }
@@ -22,6 +27,7 @@ table {
   width: 90%
 }
 
-th, td {
+th,
+td {
   padding: 10px;
 }
