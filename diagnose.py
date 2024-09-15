@@ -47,6 +47,8 @@ diagnose_map = organize_diagnose_data()
 def find_possible_diagnoses(symptoms):
     diagnoses = {}
     for symptom in symptoms.keys():
+        if symptom not in diagnose_map.keys():
+            continue
         for diagnose in diagnose_map[symptom]:
             if diagnose in diagnoses.keys():
                 diagnoses[diagnose] += symptoms[symptom]
