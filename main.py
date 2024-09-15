@@ -1,8 +1,7 @@
-from communicate import start_transcribe, tts
+# from communicate import start_transcribe, tts
 from analyze_description import analyze_transcript
 from summarize import summarize
 from diagnose import find_possible_diagnoses
-from pdf_generator import generate_pdf
 from follow_up import synthesize_follow_up
 
 def main():

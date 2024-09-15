@@ -18,6 +18,7 @@ def synthesize_follow_up(symptoms):
     try:
         response = model.generate_content(f"Generate two open-ended questions that can be asked to a patient who has the following symptoms: {', '.join(symptoms)}. The questions should be designed to help the patient describe their symptoms in more detail. Separate the questions with a semicolon.")
         response = response.parts[0].text.split(';')
+        response = [question.strip() for question in response]
         return response
     except Exception as e:
         print(e)
