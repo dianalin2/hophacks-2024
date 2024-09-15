@@ -4,6 +4,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 import pickle
 
 # nltk.download()
+nltk.download('averaged_perceptron_tagger_eng')
 
 symptoms = []
 patient_symptoms = []
