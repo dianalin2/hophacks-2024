@@ -10,8 +10,11 @@ from summarize import summarize
 from diagnose import find_possible_diagnoses
 from follow_up import synthesize_follow_up
 from pdf_generator import generate_pdf
+from dotenv import load_dotenv
 
 current_calls = {}
+
+load_dotenv()
 
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
@@ -19,6 +22,8 @@ BASE_URL = os.getenv('BASE_URL')
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 def setup_app(app):
+    print(BASE_URL)
+
     @app.route('/gather/callback', methods=['POST'])
     def gather_callback():
         sid = request.form['CallSid']
@@ -186,7 +191,7 @@ def _generate_pdf(sid, output_filename, name, age, sex):
 
     all_symptoms = combine_symptoms(combine_symptoms(info[1], follow_up_info1[1]), follow_up_info2[1])
     all_diagnoses = combine_diagnoses(combine_diagnoses(info[2], follow_up_info1[2]), follow_up_info2[2])
-    all_diagnoses = isolate_diagnoses(all_diagnoses)
+    all_diagnoses = isolate_diagnoses(all_diagnoses)[:5]
     print(current_calls[sid])
     print(all_diagnoses)
     generate_pdf(output_filename, name, age, sex, info[0], [(follow_up_questions[0], follow_up_transcript1), (follow_up_questions[1], follow_up_transcript2)], all_symptoms, all_diagnoses)
