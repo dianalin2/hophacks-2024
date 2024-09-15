@@ -1,0 +1,38 @@
+.table {
+    width: 98.5%;
+    border-collapse: collapse;
+    text-align: center;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.thead {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.trHead {
+    background: rgb(245, 245, 245);
+}
+
+.th {
+    font-weight: bold;
+    padding: var(--sm-spacing);
+    color: rgb(33, 33, 33);
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.trBody {
+    background: rgb(255, 255, 255);
+    ;
+}
+
+.td {
+    padding: 16px;
+    border: 1px solid rgb(33, 33, 33);
+    ;
+    font-size: 14px;
+}

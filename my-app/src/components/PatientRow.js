@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './styles.css';
 
 class PatientRow extends Component {
     constructor() {
@@ -20,12 +21,13 @@ class PatientRow extends Component {
     render() {
         console.log(this.pName)
         return (
-            <tr>
-                <td>{this.props.pName}</td>
-                <td>{this.props.number}</td>
-                <td>{this.props.timestamp}</td>
-                <td><button onClick={this.startCall}>Start Pre-Call</button></td>
-                <td><a href={`/api/patientpdf/${this.props.patientID}`} target="_blank" rel="noreferrer">{this.props.linkToReport}</a></td>
+            <tr className='trBody'>
+                <td className='td'>{this.props.pName}</td>
+                <td className='td'>{this.props.number}</td>
+                <td className='td'>{this.props.timestamp}</td>
+                <td className='td'><button onClick={this.startCall}>Start Pre-Call</button></td>
+                <td className='td'><a href={`/api/patientpdf/${this.props.patientID}`} target="_blank" rel="noreferrer">{this.props.linkToReport}</a></td>
+                <td className='td'>{this.props.urgency}</td>
             </tr>
         );
     }

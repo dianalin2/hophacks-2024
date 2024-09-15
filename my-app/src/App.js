@@ -1,8 +1,8 @@
 import './App.css';
-import Triage from './components/triage_dropdown';
-import PDFviewer from './components/pdfviewer';
 import PatientRow from './components/PatientRow';
 import { Component } from 'react';
+import Triage from './components/triage_dropdown';
+import './components/styles.css';
 
 class App extends Component {
   constructor() {
@@ -27,15 +27,15 @@ class App extends Component {
   render() {
     const patientRows = this.state.data.map((patient, index) => {
       return (
-        <PatientRow key={index} pName={patient.name} number={patient.number} timestamp={patient.timestamp} linkToReport={'Click to View Report'} patientID={patient.id} />
+        <PatientRow key={index} pName={patient.name} number={patient.number} timestamp={patient.timestamp} linkToReport={'Click to View Report'} patientID={patient.id} urgency={< Triage key={index + 'triage'} />} />
       );
     })
 
     return (
       <div className="App">
         <div className="MainContainer">
-          <p className="AppTitle">Patient Data</p>
-          <table className="InfoTable">
+          <h1 className="header-container">Patient Data</h1>
+          <table className="table-container">
             <thead>
               <tr>
                 <th>Name</th>
@@ -43,6 +43,7 @@ class App extends Component {
                 <th>Timestamp</th>
                 <th></th>
                 <th>Prediction</th>
+                <th>Urgency</th>
               </tr>
             </thead>
             <tbody>
