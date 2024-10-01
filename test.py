@@ -8,3 +8,5 @@ try:
     print(r.recognize_google(audio, language='en-US'))    # recognize speech using Google Speech Recognition
 except:                            # speech is unintelligible
     print("Could not understand audio")
+
+print("hi")

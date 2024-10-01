@@ -1,8 +1,9 @@
-# from communicate import start_transcribe, tts
+from communicate import start_transcribe, tts
 from analyze_description import analyze_transcript
 from summarize import summarize
 from diagnose import find_possible_diagnoses
 from follow_up import synthesize_follow_up
+from pdf_generator import generate_pdf
 
 def main():
     # tts prompt the user about how they are doing
@@ -27,6 +28,7 @@ def main():
 
     all_symptoms = combine_symptoms(combine_symptoms(info[1], follow_up_info1[1]), follow_up_info2[1])
     all_diagnoses = combine_diagnoses(combine_diagnoses(info[2], follow_up_info1[2]), follow_up_info2[2])
+    print(all_diagnoses)
     all_diagnoses = isolate_diagnoses(all_diagnoses)
     print(all_diagnoses)
     generate_pdf("out/temp.pdf", "Andrew Hong", "14", "M", info[0], [(follow_up_questions[0], follow_up_transcript1), (follow_up_questions[1], follow_up_transcript2)], all_symptoms, all_diagnoses)
@@ -52,12 +54,15 @@ def combine_diagnoses(d1, d2):
     for d in d1:
         if d not in d2:
             d2.append(d)
+        else:
+            d2[d2.index(d)] = (d[0], d[1]+d2[d2.index(d)][1])
     return d2
 
 def isolate_diagnoses(diagnoses):
     output = []
     for d in diagnoses:
-        output.append(d[0])
+        if(d[1] > 1):
+            output.append(d[0])
     return output
 
 if __name__ == '__main__':

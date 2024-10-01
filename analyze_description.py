@@ -18,6 +18,7 @@ def collect_symptoms_data():
             symptoms[-1] = symptoms[-1].replace("_"," ")
         csv_file.close()
     symptoms.remove(symptoms[0])
+collect_symptoms_data()
 
 def collect_symptoms_synonyms():
     with open('data/symptoms_synonyms.pkl', 'rb') as f:
